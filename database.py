@@ -5,6 +5,7 @@ from psycopg2 import pool
 from datetime import datetime
 from typing import Optional, Dict, List, Any
 import time
+import streamlit as st
 
 class Database:
     def __init__(self):
@@ -20,7 +21,12 @@ class Database:
                 if self.connection_pool is None:
                     self.connection_pool = pool.SimpleConnectionPool(
                         1, 20,
-                        os.environ['DATABASE_URL']
+                        dbname=st.secrets["DB_NAME"],
+                        user=st.secrets["DB_USER"],
+                        password=st.secrets["DB_PASSWORD"],
+                        host=st.secrets["DB_HOST"],
+                        port=st.secrets["DB_PORT"],
+                        sslmode='require'
                     )
                 return
             except Exception as e:
