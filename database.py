@@ -82,8 +82,12 @@ class Database:
         """Create database tables if they don't exist"""
         def _create_tables(cur):
             # Create persons table
+            cur.execute("DROP TABLE IF EXISTS persons CASCADE")
+            cur.execute("DROP TABLE IF EXISTS contact_info CASCADE")
+            cur.execute("DROP TABLE IF EXISTS documents CASCADE")
+            
             cur.execute("""
-                CREATE TABLE IF NOT EXISTS persons (
+                CREATE TABLE persons (
                     id SERIAL PRIMARY KEY,
                     full_name VARCHAR(255) NOT NULL,
                     father_name VARCHAR(255) NOT NULL,
