@@ -53,10 +53,10 @@ class Database:
             conn = None
             try:
                 conn = self.get_connection()
-                with conn.cursor(cursor_factory=RealDictCursor) as cur:
-                    result = operation(cur, *args)
-                    conn.commit()
-                    return result
+                with conn:  # This ensures transaction is managed properly
+                    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                        result = operation(cur, *args)
+                        return result
             except (psycopg2.OperationalError, psycopg2.InterfaceError) as e:
                 last_error = e
                 if conn:
@@ -81,13 +81,9 @@ class Database:
     def create_tables(self):
         """Create database tables if they don't exist"""
         def _create_tables(cur):
-            # Create persons table
-            cur.execute("DROP TABLE IF EXISTS persons CASCADE")
-            cur.execute("DROP TABLE IF EXISTS contact_info CASCADE")
-            cur.execute("DROP TABLE IF EXISTS documents CASCADE")
-            
+            # Create persons table if not exists
             cur.execute("""
-                CREATE TABLE persons (
+                CREATE TABLE IF NOT EXISTS persons (
                     id SERIAL PRIMARY KEY,
                     full_name VARCHAR(255) NOT NULL,
                     father_name VARCHAR(255) NOT NULL,
