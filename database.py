@@ -98,7 +98,7 @@ class Database:
                     voter_no VARCHAR(100),
                     permanent_address TEXT NOT NULL,
                     present_address TEXT NOT NULL,
-                    image_data JSONB,
+                    image_data JSONB DEFAULT NULL,
                     description TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
